@@ -15,7 +15,38 @@ type StepProps = {
   onPrev: () => void;
 };
 
-const termsAndConditionsText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Section 2: Contributions. Each member shall contribute a monthly amount as agreed. Failure to contribute for three consecutive months may result in suspension of membership benefits. Section 3: Withdrawals. Members may request to withdraw their contributions subject to a 30-day notice period and a 5% processing fee. Section 4: Governance. The fund is governed by a board of directors elected by the members. All decisions are made in the best interest of the fund and its members.`;
+const termsAndConditionsText = `
+Classification: Public
+
+TERMS AND CONDITIONS OF INVESTING IN THE FUND
+1)Membership: Current and former bankers in and out of the country are eligible to join.
+2)Share Value: 1share equals to15,000Rwf.
+i)A member is mandated to contribute not less than one share per month.
+ii)A member is free to top up his/her shares/savings with any amount within a month.
+3)Management fee: A member is mandated to pay 3,000Rwf while joining. This can be deducted from the shares honored or paid
+separately.
+4)LOAN:
+i) Amount open to loan: 80% of the savings.
+ii)Loan Interest rate: 3% for the amount open to loan.
+iii)Loan Exceptions: This is when a member wants to borrow amount above the amount open to loan.
+iv)Loan Exception Approvals: This is only approved by the Loan committee.
+v)Loan Exception Interest rate: when the borrower goes above amount open to loan (80%), the interest rate will be lifted to 5%.
+5)Loan tenure: 3-12months
+6)Meeting:
+i)General meetings period: 2times a year.
+ii)The meeting details shall be communicated to the members 28 days before.
+7)Withdrawal from the Fund: A member is free to exit/withdraw his/her membership/shares from the Fund following below criteria.
+i)Withdrawal of shares but retaining membership: Member will be charged 5% of the withdraw amount.
+ii)Withdrawal membership, also known as LAST Withdrawal: Member will be charged 5% of his/her total shares and the rest will
+be credited to the preferred account/Wallet Number of the member.
+iii)Loan repayment using own shares/savings: 5% is chargeable.
+8)Penalties :
+i) Skipping monthly contributions, If a member skips his/her monthly contributions thrice(3), will be charged 2,000Rwf from his her
+ii)Late loan repayment, 1% is charged per month
+iii)Meeting attendance penalties:1,000Rwf which will be deducted from his/her shares.
+Disclaimer: The T&C that consist of fees, charges & interest rates, are open to change due to different circumstances like growth of
+the company or inflation. When these changes are to be applied, the investors will be informed 28days before.
+`;
 
 export default function AgreementStep({ onPrev }: StepProps) {
   const form = useFormContext();
@@ -56,7 +87,7 @@ export default function AgreementStep({ onPrev }: StepProps) {
              <Accordion type="single" collapsible>
                 <AccordionItem value="item-1">
                   <AccordionTrigger>Read Full Terms and Conditions</AccordionTrigger>
-                  <AccordionContent className="h-48 overflow-y-auto pr-2 text-muted-foreground">
+                  <AccordionContent className="h-48 overflow-y-auto pr-2 text-muted-foreground whitespace-pre-wrap">
                     {termsAndConditionsText}
                   </AccordionContent>
                 </AccordionItem>

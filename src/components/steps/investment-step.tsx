@@ -13,7 +13,7 @@ type StepProps = {
   onPrev: () => void;
 };
 
-const SHARE_PRICE = 1000; // RWF per share
+const SHARE_PRICE = 15000; // RWF per share
 
 const chartData = [
   { month: "January", desktop: 186 },
@@ -72,8 +72,8 @@ export default function InvestmentStep({ onNext, onPrev }: StepProps) {
                    <Slider
                       value={[field.value]}
                       onValueChange={(value) => field.onChange(value[0])}
-                      max={200000}
-                      step={1000}
+                      max={500000}
+                      step={5000}
                       className="mt-4"
                     />
                   <FormMessage />
