@@ -1,3 +1,4 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -40,6 +41,7 @@ const nextConfig: NextConfig = {
       object-src 'none';
       base-uri 'self';
       form-action 'self';
+      frame-ancestors *;
     `;
 
     return [
