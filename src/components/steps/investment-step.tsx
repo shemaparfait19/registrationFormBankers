@@ -11,7 +11,6 @@ import { Loader2, Ticket, Wand2 } from 'lucide-react';
 import { convertNumberToWords } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { Textarea } from '../ui/textarea';
-import { debounce } from 'lodash';
 
 type StepProps = {
   onNext: () => void;
@@ -48,34 +47,33 @@ export default function InvestmentStep({ onNext, onPrev }: StepProps) {
     return investmentAmount >= SHARE_PRICE ? Math.floor(investmentAmount / SHARE_PRICE) : 0;
   }, [investmentAmount]);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const handleConvertToWords = useCallback(
-    debounce(async (amount: number) => {
-      if (amount < 1) {
-        setValue('investmentAmountInWords', '');
-        return;
+  const handleConvertToWords = useCallback(async (amount: number) => {
+    if (amount < 1) {
+      setValue('investmentAmountInWords', '');
+      return;
+    }
+    setIsConverting(true);
+    try {
+      const result = await convertNumberToWords(amount);
+      if (result.success && result.words) {
+        setValue('investmentAmountInWords', result.words);
+      } else {
+        toast({
+          variant: 'destructive',
+          title: 'Conversion Failed',
+          description: result.error || 'Could not convert number to words.',
+        });
       }
-      setIsConverting(true);
-      try {
-        const result = await convertNumberToWords(amount);
-        if (result.success && result.words) {
-          setValue('investmentAmountInWords', result.words);
-        } else {
-          toast({
-            variant: 'destructive',
-            title: 'Conversion Failed',
-            description: result.error || 'Could not convert number to words.',
-          });
-        }
-      } finally {
-        setIsConverting(false);
-      }
-    }, 500),
-    [setValue, toast] 
-  );
+    } finally {
+      setIsConverting(false);
+    }
+  }, [setValue, toast]);
 
   useEffect(() => {
-    handleConvertToWords(investmentAmount);
+    const timeoutId = setTimeout(() => {
+        handleConvertToWords(investmentAmount);
+    }, 500);
+    return () => clearTimeout(timeoutId);
   }, [investmentAmount, handleConvertToWords]);
 
 
