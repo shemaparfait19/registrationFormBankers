@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Loader2, Ticket, Wand2 } from 'lucide-react';
 import { convertNumberToWords } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
@@ -37,7 +37,7 @@ const chartConfig = {
 
 export default function InvestmentStep({ onNext, onPrev }: StepProps) {
   const form = useFormContext();
-  const { control, watch, setValue } = form;
+  const { control, watch, setValue, getValues } = form;
   const { toast } = useToast();
   const [isConverting, setIsConverting] = useState(false);
 
@@ -47,16 +47,21 @@ export default function InvestmentStep({ onNext, onPrev }: StepProps) {
     return investmentAmount >= SHARE_PRICE ? Math.floor(investmentAmount / SHARE_PRICE) : 0;
   }, [investmentAmount]);
 
-  const handleConvertToWords = useCallback(async (amount: number) => {
-    if (amount < 1) {
-      setValue('investmentAmountInWords', '');
+  const handleConvertToWords = useCallback(async () => {
+    const amount = getValues('investmentAmount');
+    if (!amount || amount < 1) {
+      toast({
+        variant: 'destructive',
+        title: 'Invalid Amount',
+        description: 'Please enter a valid amount to convert.',
+      });
       return;
     }
     setIsConverting(true);
     try {
       const result = await convertNumberToWords(amount);
       if (result.success && result.words) {
-        setValue('investmentAmountInWords', result.words);
+        setValue('investmentAmountInWords', result.words, { shouldValidate: true });
       } else {
         toast({
           variant: 'destructive',
@@ -67,14 +72,7 @@ export default function InvestmentStep({ onNext, onPrev }: StepProps) {
     } finally {
       setIsConverting(false);
     }
-  }, [setValue, toast]);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-        handleConvertToWords(investmentAmount);
-    }, 500);
-    return () => clearTimeout(timeoutId);
-  }, [investmentAmount, handleConvertToWords]);
+  }, [getValues, setValue, toast]);
 
 
   return (
@@ -128,13 +126,21 @@ export default function InvestmentStep({ onNext, onPrev }: StepProps) {
                     <div className="relative">
                        <Textarea
                           readOnly
-                          placeholder="Amount in words will appear here..."
+                          placeholder="Click the magic wand to convert amount to words..."
                           {...field}
                           className="pr-10 bg-gray-50"
                         />
-                       {isConverting && (
-                        <Loader2 className="absolute right-3 top-3 h-5 w-5 animate-spin text-muted-foreground" />
-                      )}
+                       <Button 
+                          type="button" 
+                          variant="ghost" 
+                          size="icon" 
+                          className="absolute right-2 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:bg-primary/10"
+                          onClick={handleConvertToWords}
+                          disabled={isConverting}
+                        >
+                          {isConverting ? <Loader2 className="h-5 w-5 animate-spin" /> : <Wand2 className="h-5 w-5" />}
+                          <span className="sr-only">Convert to words</span>
+                        </Button>
                     </div>
                   </FormControl>
                   <FormMessage />
