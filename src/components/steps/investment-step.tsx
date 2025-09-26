@@ -7,6 +7,7 @@ import { Slider } from '@/components/ui/slider';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
 import { useMemo } from 'react';
+import { Ticket } from 'lucide-react';
 
 type StepProps = {
   onNext: () => void;
@@ -86,6 +87,29 @@ export default function InvestmentStep({ onNext, onPrev }: StepProps) {
               <p className="text-xs text-muted-foreground">
                 Based on a share price of {SHARE_PRICE.toLocaleString()} RWF
               </p>
+            </div>
+             <div className="space-y-4">
+                <h3 className="font-medium">Referral Information</h3>
+                <FormField
+                    control={form.control}
+                    name="referralCode"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Referral Code (Optional)</FormLabel>
+                        <FormControl>
+                            <div className="relative">
+                                <Ticket className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                <Input 
+                                    placeholder="Enter referral code" 
+                                    {...field}
+                                    className="pl-10"
+                                />
+                            </div>
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
             </div>
           </div>
           <div className="space-y-4">

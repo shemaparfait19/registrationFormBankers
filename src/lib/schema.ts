@@ -28,6 +28,7 @@ export const IdentificationSchema = z.object({
 
 export const InvestmentSchema = z.object({
     investmentAmount: z.number().min(15000, { message: "Investment must be at least 15,000 RWF (1 share)." }),
+    referralCode: z.string().optional(),
 });
 
 export const AgreementSchema = z.object({
@@ -52,6 +53,6 @@ export const StepFields: (keyof FormState)[][] = [
   ['fullName', 'sex', 'maritalStatus', 'mobile1', 'mobile2', 'email'],
   ['country', 'province', 'district', 'sector', 'cell', 'village', 'workAddress'],
   ['idNumber', 'passportExpiryDate', 'nextOfKinName', 'nextOfKinContact'],
-  ['investmentAmount'],
+  ['investmentAmount', 'referralCode'],
   ['acceptTerms', 'consentToSharing', 'confirmAccuracy', 'signature'],
 ];
