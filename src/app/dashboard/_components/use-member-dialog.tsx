@@ -2,6 +2,7 @@
 
 import { create } from 'zustand';
 import type { FormState } from '@/lib/schema';
+import { createContext } from 'react';
 
 type Registration = FormState & { id: string, submittedAt: string };
 
@@ -20,7 +21,6 @@ export const useMemberDialog = create<MemberDialogStore>((set) => ({
 }));
 
 // A provider is used to ensure this is only used on the client
-import { createContext, useContext } from 'react';
 export const MemberDialogContext = createContext(true);
 export const MemberDialogProvider = ({ children }: { children: React.ReactNode }) => (
     <MemberDialogContext.Provider value={true}>
