@@ -10,6 +10,7 @@ import { useState } from 'react';
 import { summarizeTerms } from '@/lib/actions';
 import { useToast } from '@/hooks/use-toast';
 import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import jsPDF from 'jspdf';
 
 type StepProps = {
   onPrev: () => void;
@@ -48,6 +49,17 @@ Disclaimer: The T&C that consist of fees, charges & interest rates, are open to 
 the company or inflation. When these changes are to be applied, the investors will be informed 28days before.
 `;
 
+const registrationFormText = `
+I …………………………………………………………………………………………………………… hereby
+acknowledge receipt of a copy of terms and conditions and agree to abide by them and confirm the
+information provided above is true & accurate. I will undertake to notify bankers’ Investment
+Fund within 28days if there is any change of information that I have provided. I also consent
+to use or share my information with Bankers ‘Investment Fund or the domestic authorities as per
+the need.
+DATE
+Signature
+`;
+
 export default function AgreementStep({ onPrev }: StepProps) {
   const form = useFormContext();
   const { toast } = useToast();
@@ -71,6 +83,36 @@ export default function AgreementStep({ onPrev }: StepProps) {
     }
   };
   
+  const handleDownload = () => {
+    const doc = new jsPDF();
+    const pageHeight = doc.internal.pageSize.height;
+    let y = 15;
+    
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text("BANKERS’ INVESTMENT FUND", doc.internal.pageSize.width / 2, y, { align: 'center' });
+    y += 7;
+    doc.text("INVESTORS’ REGISTRATION FORM", doc.internal.pageSize.width / 2, y, { align: 'center' });
+    y += 10;
+
+    const fullText = termsAndConditionsText + registrationFormText;
+    const lines = doc.splitTextToSize(fullText, 180);
+
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+
+    lines.forEach((line: string) => {
+        if (y > pageHeight - 20) {
+            doc.addPage();
+            y = 15;
+        }
+        doc.text(line, 15, y);
+        y += 7;
+    });
+
+    doc.save('Bankers_Investment_Fund_TC.pdf');
+  };
+
   const watchedFullName = form.watch("fullName");
 
   return (
@@ -102,7 +144,7 @@ export default function AgreementStep({ onPrev }: StepProps) {
               )}
               Summarize with AI
             </Button>
-            <Button variant="outline" type="button">
+            <Button variant="outline" type="button" onClick={handleDownload}>
                 <FileText className="mr-2 h-4 w-4" />
                 Download PDF
             </Button>
