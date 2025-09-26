@@ -5,7 +5,7 @@ import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-import { FormSchema, StepFields } from '@/lib/schema';
+import { FormSchema, StepFields, type FormState } from '@/lib/schema';
 import ProgressIndicator from './progress-indicator';
 import WelcomeStep from './steps/welcome-step';
 import PersonalDetailsStep from './steps/personal-details-step';
@@ -14,6 +14,8 @@ import IdentificationStep from './steps/identification-step';
 import InvestmentStep from './steps/investment-step';
 import AgreementStep from './steps/agreement-step';
 import ConfirmationStep from './steps/confirmation-step';
+import { saveToDb } from '@/lib/actions';
+import { useToast } from '@/hooks/use-toast';
 
 const stepDetails = [
   { name: 'Welcome' },
@@ -26,11 +28,12 @@ const stepDetails = [
 
 export default function FormContainer() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<z.infer<typeof FormSchema> | null>(
+  const [formData, setFormData] = useState<FormState | null>(
     null
   );
+  const { toast } = useToast();
 
-  const methods = useForm<z.infer<typeof FormSchema>>({
+  const methods = useForm<FormState>({
     resolver: zodResolver(FormSchema),
     mode: 'onChange',
     defaultValues: {
@@ -74,10 +77,21 @@ export default function FormContainer() {
     setCurrentStep(prev => prev - 1);
   };
 
-  const processForm = (data: z.infer<typeof FormSchema>) => {
+  const processForm = async (data: FormState) => {
     console.log('Form Submitted:', data);
-    setFormData(data);
-    setCurrentStep(prev => prev + 1);
+    
+    const result = await saveToDb(data);
+
+    if (result.success) {
+      setFormData(data);
+      setCurrentStep(prev => prev + 1);
+    } else {
+       toast({
+        variant: 'destructive',
+        title: 'Submission Failed',
+        description: result.error || 'Could not save your application. Please try again.',
+      });
+    }
   };
 
   return (

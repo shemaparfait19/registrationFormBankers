@@ -1,6 +1,9 @@
 'use server';
 
 import { summarizeTermsAndConditions as summarize } from '@/ai/flows/summarize-terms-and-conditions';
+import { db } from './firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import type { FormState } from './schema';
 
 export async function summarizeTerms(terms: string) {
   if (!terms) {
@@ -12,5 +15,20 @@ export async function summarizeTerms(terms: string) {
   } catch (error) {
     console.error('AI Summarization Error:', error);
     return { success: false, error: 'An unexpected error occurred while summarizing the terms.' };
+  }
+}
+
+export async function saveToDb(formData: FormState) {
+  try {
+    const docRef = await addDoc(collection(db, "registrations"), {
+      ...formData,
+      passportExpiryDate: formData.passportExpiryDate ? formData.passportExpiryDate.toISOString().split('T')[0] : null,
+      submittedAt: serverTimestamp()
+    });
+    console.log("Document written with ID: ", docRef.id);
+    return { success: true, docId: docRef.id };
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    return { success: false, error: "Failed to save data." };
   }
 }
