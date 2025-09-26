@@ -63,6 +63,8 @@ export const columns: ColumnDef<Registration>[] = [
         
         if (result.success) {
           toast({ title: 'Success', description: 'Registration deleted successfully.' });
+          // Reload the page to reflect the deletion
+          window.location.reload();
         } else {
           toast({ variant: 'destructive', title: 'Error', description: result.error });
         }
