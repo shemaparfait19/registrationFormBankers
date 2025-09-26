@@ -61,12 +61,6 @@ export default function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
                         </FormControl>
                         <FormLabel className="font-normal">Female</FormLabel>
                       </FormItem>
-                       <FormItem className="flex items-center space-x-2 space-y-0">
-                        <FormControl>
-                          <RadioGroupItem value="Other" />
-                        </FormControl>
-                        <FormLabel className="font-normal">Other</FormLabel>
-                      </FormItem>
                     </RadioGroup>
                   </FormControl>
                   <FormMessage />

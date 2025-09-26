@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 export const PersonalDetailsSchema = z.object({
   fullName: z.string().min(3, { message: 'Full name must be at least 3 characters.' }),
-  sex: z.enum(['Male', 'Female', 'Other'], { required_error: 'Please select your gender.' }),
+  sex: z.enum(['Male', 'Female'], { required_error: 'Please select your gender.' }),
   maritalStatus: z.enum(['Single', 'Married', 'Divorced', 'Widowed'], { required_error: 'Please select a marital status.' }),
   mobile1: z.string().regex(/^(07[8,2,3,9])[0-9]{7}$/, { message: 'Please enter a valid Rwandan mobile number (e.g., 07...)' }),
   mobile2: z.string().regex(/^(07[8,2,3,9])[0-9]{7}$/, { message: 'Please enter a valid Rwandan mobile number (e.g., 07...)' }).optional().or(z.literal('')),
