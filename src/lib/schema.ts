@@ -15,7 +15,7 @@ export const PersonalDetailsSchema = z.object({
   village: z.string().min(1, { message: 'Village is required.' }),
   workAddress: z.string().optional(),
   idNumber: z.string().min(5, { message: 'ID/Passport number must be at least 5 characters.' }),
-  passportExpiryDate: z.date().optional(),
+  passportExpiryDate: z.coerce.date().optional(),
   nextOfKinName: z.string().min(3, { message: 'Next of kin name is required.' }),
   nextOfKinContact: z.string().regex(/^(07[8,2,3,9])[0-9]{7}$/, { message: 'Please enter a valid Rwandan mobile number.' }),
 });

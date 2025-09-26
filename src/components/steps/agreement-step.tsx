@@ -5,11 +5,7 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/comp
 import { Checkbox } from '@/components/ui/checkbox';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Input } from '@/components/ui/input';
-import { Wand2, Loader2, FileText } from 'lucide-react';
-import { useState } from 'react';
-import { summarizeTerms } from '@/lib/actions';
-import { useToast } from '@/hooks/use-toast';
-import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { FileText } from 'lucide-react';
 import { generatePdf } from '@/lib/pdf';
 
 type StepProps = {
@@ -52,27 +48,6 @@ the company or inflation. When these changes are to be applied, the investors wi
 
 export default function AgreementStep({ onPrev }: StepProps) {
   const form = useFormContext();
-  const { toast } = useToast();
-  const [isSummarizing, setIsSummarizing] = useState(false);
-  const [summary, setSummary] = useState('');
-  const [showSummaryDialog, setShowSummaryDialog] = useState(false);
-
-  const handleSummarize = async () => {
-    setIsSummarizing(true);
-    const result = await summarizeTerms(termsAndConditionsText);
-    setIsSummarizing(false);
-    if (result.success && result.summary) {
-      setSummary(result.summary);
-      setShowSummaryDialog(true);
-    } else {
-      toast({
-        variant: 'destructive',
-        title: 'Summarization Failed',
-        description: result.error || 'Could not summarize the terms.',
-      });
-    }
-  };
-
   const watchedFullName = form.watch("fullName");
 
   return (
@@ -96,14 +71,6 @@ export default function AgreementStep({ onPrev }: StepProps) {
               </Accordion>
           </div>
           <div className="flex gap-4">
-            <Button variant="outline" onClick={handleSummarize} disabled={isSummarizing} type="button">
-              {isSummarizing ? (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              ) : (
-                <Wand2 className="mr-2 h-4 w-4" />
-              )}
-              Summarize with AI
-            </Button>
             <Button variant="outline" type="button" onClick={generatePdf}>
                 <FileText className="mr-2 h-4 w-4" />
                 Download PDF
@@ -162,23 +129,6 @@ export default function AgreementStep({ onPrev }: StepProps) {
         <Button size="lg" type="submit">Submit Application</Button>
       </CardFooter>
     </Card>
-
-    <AlertDialog open={showSummaryDialog} onOpenChange={setShowSummaryDialog}>
-        <AlertDialogContent>
-            <AlertDialogHeader>
-            <AlertDialogTitle>AI-Powered Summary</AlertDialogTitle>
-            <AlertDialogDescription>
-                Here is a summary of the terms and conditions. Note: This is for convenience only. The full terms and conditions are legally binding.
-            </AlertDialogDescription>
-            </AlertDialogHeader>
-            <div className="max-h-60 overflow-y-auto text-sm text-muted-foreground pr-2">
-                {summary}
-            </div>
-            <AlertDialogFooter>
-                <AlertDialogAction onClick={() => setShowSummaryDialog(false)}>Got it</AlertDialogAction>
-            </AlertDialogFooter>
-        </AlertDialogContent>
-    </AlertDialog>
     </>
   );
 }

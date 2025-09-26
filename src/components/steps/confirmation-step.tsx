@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2, Download, LayoutDashboard, Plus, Share2 } from 'lucide-react';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 type ConfirmationStepProps = {
@@ -43,7 +44,9 @@ export default function ConfirmationStep({ applicantName, onRestart }: Confirmat
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
             <Button variant="outline"><Download className="mr-2 h-4 w-4" /> Receipt</Button>
             <Button variant="outline"><Share2 className="mr-2 h-4 w-4" /> Share</Button>
-            <Button><LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard</Button>
+            <Button asChild>
+                <Link href="/dashboard"><LayoutDashboard className="mr-2 h-4 w-4" /> Dashboard</Link>
+            </Button>
             <Button variant="secondary" onClick={onRestart}><Plus className="mr-2 h-4 w-4" /> New App</Button>
         </div>
       </CardContent>
