@@ -43,7 +43,7 @@ export default function FormContainer() {
       mobile1: '',
       mobile2: '',
       email: '',
-      country: 'Rwanda',
+      country: '',
       province: '',
       district: '',
       sector: '',
@@ -108,7 +108,7 @@ export default function FormContainer() {
             <WelcomeStep onNext={() => setCurrentStep(1)} />
           )}
           {currentStep === 1 && (
-            <PersonalDetailsStep onNext={handleNext} onPrev={handlePrev} />
+            <PersonalDetailsStep onNext={handleNext} onPrev={() => setCurrentStep(0)} />
           )}
           {currentStep === 2 && (
             <AddressStep onNext={handleNext} onPrev={handlePrev} />

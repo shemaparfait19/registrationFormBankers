@@ -46,8 +46,8 @@ export default function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
                   <FormControl>
                     <RadioGroup
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
-                      className="flex space-x-4"
+                      value={field.value}
+                      className="flex space-x-4 pt-2"
                     >
                       <FormItem className="flex items-center space-x-2 space-y-0">
                         <FormControl>
@@ -79,7 +79,7 @@ export default function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Marital Status</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Select a status" />
