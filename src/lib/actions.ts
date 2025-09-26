@@ -1,6 +1,7 @@
 'use server';
 
 import { summarizeTermsAndConditions as summarize } from '@/ai/flows/summarize-terms-and-conditions';
+import { numberToWords } from '@/ai/flows/number-to-words';
 import { db } from './firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import type { FormState } from './schema';
@@ -15,6 +16,16 @@ export async function summarizeTerms(terms: string) {
   } catch (error) {
     console.error('AI Summarization Error:', error);
     return { success: false, error: 'An unexpected error occurred while summarizing the terms.' };
+  }
+}
+
+export async function convertNumberToWords(amount: number) {
+  try {
+    const result = await numberToWords({ number: amount });
+    return { success: true, words: result.words };
+  } catch (error) {
+    console.error('AI Number Conversion Error:', error);
+    return { success: false, error: 'An unexpected error occurred during conversion.' };
   }
 }
 

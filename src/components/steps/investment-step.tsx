@@ -6,8 +6,12 @@ import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, XAxis, YAxis } from 'recharts';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart';
-import { useMemo } from 'react';
-import { Ticket } from 'lucide-react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Loader2, Ticket, Wand2 } from 'lucide-react';
+import { convertNumberToWords } from '@/lib/actions';
+import { useToast } from '@/hooks/use-toast';
+import { Textarea } from '../ui/textarea';
+import { debounce } from 'lodash';
 
 type StepProps = {
   onNext: () => void;
@@ -34,11 +38,46 @@ const chartConfig = {
 
 export default function InvestmentStep({ onNext, onPrev }: StepProps) {
   const form = useFormContext();
-  const investmentAmount = form.watch('investmentAmount');
+  const { control, watch, setValue } = form;
+  const { toast } = useToast();
+  const [isConverting, setIsConverting] = useState(false);
+
+  const investmentAmount = watch('investmentAmount');
 
   const shares = useMemo(() => {
     return investmentAmount >= SHARE_PRICE ? Math.floor(investmentAmount / SHARE_PRICE) : 0;
   }, [investmentAmount]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const handleConvertToWords = useCallback(
+    debounce(async (amount: number) => {
+      if (amount < 1) {
+        setValue('investmentAmountInWords', '');
+        return;
+      }
+      setIsConverting(true);
+      try {
+        const result = await convertNumberToWords(amount);
+        if (result.success && result.words) {
+          setValue('investmentAmountInWords', result.words);
+        } else {
+          toast({
+            variant: 'destructive',
+            title: 'Conversion Failed',
+            description: result.error || 'Could not convert number to words.',
+          });
+        }
+      } finally {
+        setIsConverting(false);
+      }
+    }, 500),
+    [setValue, toast] 
+  );
+
+  useEffect(() => {
+    handleConvertToWords(investmentAmount);
+  }, [investmentAmount, handleConvertToWords]);
+
 
   return (
     <Card className="w-full step-card">
@@ -51,18 +90,18 @@ export default function InvestmentStep({ onNext, onPrev }: StepProps) {
           <div className="space-y-6">
             <h3 className="font-medium">Contribution Amount</h3>
             <FormField
-              control={form.control}
+              control={control}
               name="investmentAmount"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Amount in RWF</FormLabel>
+                  <FormLabel>Amount in Figures (RWF)</FormLabel>
                   <FormControl>
                     <div className="relative">
                       <Input
                         type="number"
                         className="pr-24 text-lg"
                         placeholder="e.g., 50000"
-                        value={field.value}
+                        value={field.value || ''}
                         onChange={(e) => field.onChange(parseInt(e.target.value, 10) || 0)}
                       />
                        <span className="absolute inset-y-0 right-4 flex items-center text-lg font-semibold text-muted-foreground">
@@ -81,17 +120,33 @@ export default function InvestmentStep({ onNext, onPrev }: StepProps) {
                 </FormItem>
               )}
             />
-            <div className="p-4 bg-primary/10 rounded-lg text-center">
-              <p className="text-sm text-primary font-medium">Calculated Shares</p>
-              <p className="text-3xl font-bold text-primary">{shares.toLocaleString()}</p>
-              <p className="text-xs text-muted-foreground">
-                Based on a share price of {SHARE_PRICE.toLocaleString()} RWF
-              </p>
-            </div>
+            <FormField
+              control={control}
+              name="investmentAmountInWords"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Amount in Words</FormLabel>
+                  <FormControl>
+                    <div className="relative">
+                       <Textarea
+                          readOnly
+                          placeholder="Amount in words will appear here..."
+                          {...field}
+                          className="pr-10 bg-gray-50"
+                        />
+                       {isConverting && (
+                        <Loader2 className="absolute right-3 top-3 h-5 w-5 animate-spin text-muted-foreground" />
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
              <div className="space-y-4">
                 <h3 className="font-medium">Referral Information</h3>
                 <FormField
-                    control={form.control}
+                    control={control}
                     name="referralCode"
                     render={({ field }) => (
                         <FormItem>
@@ -113,6 +168,13 @@ export default function InvestmentStep({ onNext, onPrev }: StepProps) {
             </div>
           </div>
           <div className="space-y-4">
+             <div className="p-4 bg-primary/10 rounded-lg text-center">
+              <p className="text-sm text-primary font-medium">Calculated Shares</p>
+              <p className="text-3xl font-bold text-primary">{shares.toLocaleString()}</p>
+              <p className="text-xs text-muted-foreground">
+                Based on a share price of {SHARE_PRICE.toLocaleString()} RWF
+              </p>
+            </div>
             <h3 className="font-medium">Typical Member Contributions</h3>
             <Card className="h-64">
               <CardContent className="h-full p-2">

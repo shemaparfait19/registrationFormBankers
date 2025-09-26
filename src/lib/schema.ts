@@ -7,9 +7,6 @@ export const PersonalDetailsSchema = z.object({
   mobile1: z.string().regex(/^(07[8,2,3,9])[0-9]{7}$/, { message: 'Please enter a valid Rwandan mobile number (e.g., 07...)' }),
   mobile2: z.string().regex(/^(07[8,2,3,9])[0-9]{7}$/, { message: 'Please enter a valid Rwandan mobile number (e.g., 07...)' }).optional().or(z.literal('')),
   email: z.string().email({ message: 'Please enter a valid email address.' }),
-});
-
-export const AddressSchema = z.object({
   country: z.string().min(1, { message: 'Country is required.' }),
   province: z.string().min(1, { message: 'Province is required.' }),
   district: z.string().min(1, { message: 'District is required.' }),
@@ -17,9 +14,6 @@ export const AddressSchema = z.object({
   cell: z.string().min(1, { message: 'Cell is required.' }),
   village: z.string().min(1, { message: 'Village is required.' }),
   workAddress: z.string().optional(),
-});
-
-export const IdentificationSchema = z.object({
   idNumber: z.string().min(5, { message: 'ID/Passport number must be at least 5 characters.' }),
   passportExpiryDate: z.date().optional(),
   nextOfKinName: z.string().min(3, { message: 'Next of kin name is required.' }),
@@ -28,6 +22,7 @@ export const IdentificationSchema = z.object({
 
 export const InvestmentSchema = z.object({
     investmentAmount: z.number().min(15000, { message: "Investment must be at least 15,000 RWF (1 share)." }),
+    investmentAmountInWords: z.string().min(1, { message: "Amount in words is required." }),
     referralCode: z.string().optional(),
 });
 
@@ -44,15 +39,13 @@ export const AgreementSchema = z.object({
   signature: z.string().min(3, { message: 'Please provide your full name as a signature.' }),
 });
 
-export const FormSchema = PersonalDetailsSchema.merge(AddressSchema).merge(IdentificationSchema).merge(InvestmentSchema).merge(AgreementSchema);
+export const FormSchema = PersonalDetailsSchema.merge(InvestmentSchema).merge(AgreementSchema);
 
 export type FormState = z.infer<typeof FormSchema>;
 
 export const StepFields: (keyof FormState)[][] = [
   [], // Welcome step has no fields
-  ['fullName', 'sex', 'maritalStatus', 'mobile1', 'mobile2', 'email'],
-  ['country', 'province', 'district', 'sector', 'cell', 'village', 'workAddress'],
-  ['idNumber', 'passportExpiryDate', 'nextOfKinName', 'nextOfKinContact'],
-  ['investmentAmount', 'referralCode'],
+  ['fullName', 'sex', 'maritalStatus', 'mobile1', 'mobile2', 'email', 'country', 'province', 'district', 'sector', 'cell', 'village', 'workAddress', 'idNumber', 'passportExpiryDate', 'nextOfKinName', 'nextOfKinContact'],
+  ['investmentAmount', 'investmentAmountInWords', 'referralCode'],
   ['acceptTerms', 'consentToSharing', 'confirmAccuracy', 'signature'],
 ];

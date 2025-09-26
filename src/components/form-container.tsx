@@ -9,8 +9,6 @@ import { FormSchema, StepFields, type FormState } from '@/lib/schema';
 import ProgressIndicator from './progress-indicator';
 import WelcomeStep from './steps/welcome-step';
 import PersonalDetailsStep from './steps/personal-details-step';
-import AddressStep from './steps/address-step';
-import IdentificationStep from './steps/identification-step';
 import InvestmentStep from './steps/investment-step';
 import AgreementStep from './steps/agreement-step';
 import ConfirmationStep from './steps/confirmation-step';
@@ -19,9 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 
 const stepDetails = [
   { name: 'Welcome' },
-  { name: 'Personal' },
-  { name: 'Address' },
-  { name: 'Identification' },
+  { name: 'Personal Details' },
   { name: 'Investment' },
   { name: 'Agreement' },
 ];
@@ -43,7 +39,7 @@ export default function FormContainer() {
       mobile1: '',
       mobile2: '',
       email: '',
-      country: '',
+      country: 'Rwanda',
       province: '',
       district: '',
       sector: '',
@@ -55,6 +51,7 @@ export default function FormContainer() {
       nextOfKinName: '',
       nextOfKinContact: '',
       investmentAmount: 15000,
+      investmentAmountInWords: '',
       referralCode: '',
       acceptTerms: false,
       consentToSharing: false,
@@ -111,16 +108,10 @@ export default function FormContainer() {
             <PersonalDetailsStep onNext={handleNext} onPrev={() => setCurrentStep(0)} />
           )}
           {currentStep === 2 && (
-            <AddressStep onNext={handleNext} onPrev={handlePrev} />
-          )}
-          {currentStep === 3 && (
-            <IdentificationStep onNext={handleNext} onPrev={handlePrev} />
-          )}
-          {currentStep === 4 && (
             <InvestmentStep onNext={handleNext} onPrev={handlePrev} />
           )}
-          {currentStep === 5 && <AgreementStep onPrev={handlePrev} />}
-          {currentStep === 6 && (
+          {currentStep === 3 && <AgreementStep onPrev={handlePrev} />}
+          {currentStep === 4 && (
             <ConfirmationStep
               applicantName={methods.getValues('fullName')}
               onRestart={() => {
