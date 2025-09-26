@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { CheckCircle2, FileText, Clock } from 'lucide-react';
+import { generatePdf } from '@/lib/pdf';
 
 type WelcomeStepProps = {
   onNext: () => void;
@@ -59,7 +60,7 @@ export default function WelcomeStep({ onNext }: WelcomeStepProps) {
       </CardContent>
       <CardFooter className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
         <Button size="lg" onClick={onNext} className="w-full sm:w-auto">Start Registration</Button>
-        <Button size="lg" variant="outline" className="w-full sm:w-auto">
+        <Button size="lg" variant="outline" className="w-full sm:w-auto" onClick={generatePdf} type="button">
           <FileText className="mr-2 h-4 w-4" />
           Download Terms PDF
         </Button>
