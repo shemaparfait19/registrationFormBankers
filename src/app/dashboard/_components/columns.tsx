@@ -14,7 +14,7 @@ import {
 import type { FormState } from '@/lib/schema';
 import { useMemberDialog } from './use-member-dialog';
 import { deleteRegistration } from '@/lib/actions';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 
 type Registration = FormState & { id: string; submittedAt: string };

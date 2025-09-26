@@ -12,7 +12,7 @@ import InvestmentStep from '@/components/steps/investment-step';
 import AgreementStep from '@/components/steps/agreement-step';
 import { useEffect } from 'react';
 import { updateRegistration } from '@/lib/actions';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 
 
