@@ -32,16 +32,16 @@ ii)Loan Interest rate: 3% for the amount open to loan.
 iii)Loan Exceptions: This is when a member wants to borrow amount above the amount open to loan.
 iv)Loan Exception Approvals: This is only approved by the Loan committee.
 v)Loan Exception Interest rate: when the borrower goes above amount open to loan (80%), the interest rate will be lifted to 5%.
-5)Loan tenure: 3-12months
-6)Meeting:
+6)Loan tenure: 3-12months
+7)Meeting:
 i)General meetings period: 2times a year.
 ii)The meeting details shall be communicated to the members 28 days before.
-7)Withdrawal from the Fund: A member is free to exit/withdraw his/her membership/shares from the Fund following below criteria.
+8)Withdrawal from the Fund: A member is free to exit/withdraw his/her membership/shares from the Fund following below criteria.
 i)Withdrawal of shares but retaining membership: Member will be charged 5% of the withdraw amount.
 ii)Withdrawal membership, also known as LAST Withdrawal: Member will be charged 5% of his/her total shares and the rest will
 be credited to the preferred account/Wallet Number of the member.
 iii)Loan repayment using own shares/savings: 5% is chargeable.
-8)Penalties :
+9)Penalties :
 i) Skipping monthly contributions, If a member skips his/her monthly contributions thrice(3), will be charged 2,000Rwf from his her
 ii)Late loan repayment, 1% is charged per month
 iii)Meeting attendance penalties:1,000Rwf which will be deducted from his/her shares.
@@ -60,34 +60,11 @@ DATE
 Signature
 `;
 
-export default function AgreementStep({ onPrev }: StepProps) {
-  const form = useFormContext();
-  const { toast } = useToast();
-  const [isSummarizing, setIsSummarizing] = useState(false);
-  const [summary, setSummary] = useState('');
-  const [showSummaryDialog, setShowSummaryDialog] = useState(false);
-
-  const handleSummarize = async () => {
-    setIsSummarizing(true);
-    const result = await summarizeTerms(termsAndConditionsText);
-    setIsSummarizing(false);
-    if (result.success && result.summary) {
-      setSummary(result.summary);
-      setShowSummaryDialog(true);
-    } else {
-      toast({
-        variant: 'destructive',
-        title: 'Summarization Failed',
-        description: result.error || 'Could not summarize the terms.',
-      });
-    }
-  };
-  
-  const handleDownload = () => {
+const generatePdf = () => {
     const doc = new jsPDF();
     const pageHeight = doc.internal.pageSize.height;
     let y = 15;
-    
+
     doc.setFontSize(16);
     doc.setFont('helvetica', 'bold');
     doc.text("BANKERS’ INVESTMENT FUND", doc.internal.pageSize.width / 2, y, { align: 'center' });
@@ -111,6 +88,30 @@ export default function AgreementStep({ onPrev }: StepProps) {
     });
 
     doc.save('Bankers_Investment_Fund_TC.pdf');
+};
+
+
+export default function AgreementStep({ onPrev }: StepProps) {
+  const form = useFormContext();
+  const { toast } = useToast();
+  const [isSummarizing, setIsSummarizing] = useState(false);
+  const [summary, setSummary] = useState('');
+  const [showSummaryDialog, setShowSummaryDialog] = useState(false);
+
+  const handleSummarize = async () => {
+    setIsSummarizing(true);
+    const result = await summarizeTerms(termsAndConditionsText);
+    setIsSummarizing(false);
+    if (result.success && result.summary) {
+      setSummary(result.summary);
+      setShowSummaryDialog(true);
+    } else {
+      toast({
+        variant: 'destructive',
+        title: 'Summarization Failed',
+        description: result.error || 'Could not summarize the terms.',
+      });
+    }
   };
 
   const watchedFullName = form.watch("fullName");
@@ -144,7 +145,7 @@ export default function AgreementStep({ onPrev }: StepProps) {
               )}
               Summarize with AI
             </Button>
-            <Button variant="outline" type="button" onClick={handleDownload}>
+            <Button variant="outline" type="button" onClick={generatePdf}>
                 <FileText className="mr-2 h-4 w-4" />
                 Download PDF
             </Button>

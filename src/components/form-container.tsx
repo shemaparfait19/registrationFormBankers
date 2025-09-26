@@ -26,15 +26,38 @@ const stepDetails = [
 
 export default function FormContainer() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formDa, setFormData] = useState<z.infer<typeof FormSchema> | null>(null);
+  const [formData, setFormData] = useState<z.infer<typeof FormSchema> | null>(
+    null
+  );
 
   const methods = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     mode: 'onChange',
     defaultValues: {
-      country: "Rwanda",
-      investmentAmount: 50000,
-    }
+      fullName: '',
+      sex: undefined,
+      maritalStatus: undefined,
+      mobile1: '',
+      mobile2: '',
+      email: '',
+      country: 'Rwanda',
+      province: '',
+      district: '',
+      sector: '',
+      cell: '',
+      village: '',
+      workAddress: '',
+      idNumber: '',
+      passportExpiryDate: undefined,
+      nextOfKinName: '',
+      nextOfKinContact: '',
+      investmentAmount: 15000,
+      referralCode: '',
+      acceptTerms: false,
+      consentToSharing: false,
+      confirmAccuracy: false,
+      signature: '',
+    },
   });
 
   const { trigger, handleSubmit } = methods;
@@ -43,18 +66,18 @@ export default function FormContainer() {
     const fieldsToValidate = StepFields[currentStep];
     const isValid = await trigger(fieldsToValidate as any);
     if (isValid) {
-      setCurrentStep((prev) => prev + 1);
+      setCurrentStep(prev => prev + 1);
     }
   };
 
   const handlePrev = () => {
-    setCurrentStep((prev) => prev - 1);
+    setCurrentStep(prev => prev - 1);
   };
 
   const processForm = (data: z.infer<typeof FormSchema>) => {
     console.log('Form Submitted:', data);
     setFormData(data);
-    setCurrentStep((prev) => prev + 1);
+    setCurrentStep(prev => prev + 1);
   };
 
   return (
@@ -62,7 +85,7 @@ export default function FormContainer() {
       <div className="space-y-8">
         {currentStep < stepDetails.length && (
           <ProgressIndicator
-            steps={stepDetails.map((s) => s.name)}
+            steps={stepDetails.map(s => s.name)}
             currentStep={currentStep}
           />
         )}
@@ -82,12 +105,10 @@ export default function FormContainer() {
           {currentStep === 4 && (
             <InvestmentStep onNext={handleNext} onPrev={handlePrev} />
           )}
-          {currentStep === 5 && (
-            <AgreementStep onPrev={handlePrev} />
-          )}
+          {currentStep === 5 && <AgreementStep onPrev={handlePrev} />}
           {currentStep === 6 && (
-            <ConfirmationStep 
-              applicantName={methods.getValues("fullName")}
+            <ConfirmationStep
+              applicantName={methods.getValues('fullName')}
               onRestart={() => {
                 methods.reset();
                 setCurrentStep(0);
