@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -60,7 +60,44 @@ export default function FormContainer() {
     },
   });
 
-  const { trigger, handleSubmit } = methods;
+  const { trigger, handleSubmit, watch, setValue } = methods;
+
+  const watchedCountry = watch('country');
+  const watchedProvince = watch('province');
+  const watchedDistrict = watch('district');
+  const watchedSector = watch('sector');
+  const watchedCell = watch('cell');
+
+  // Reset dependent fields when a parent changes
+  useEffect(() => {
+    setValue('province', '');
+    setValue('district', '');
+    setValue('sector', '');
+    setValue('cell', '');
+    setValue('village', '');
+  }, [watchedCountry, setValue]);
+
+  useEffect(() => {
+    setValue('district', '');
+    setValue('sector', '');
+    setValue('cell', '');
+    setValue('village', '');
+  }, [watchedProvince, setValue]);
+
+  useEffect(() => {
+    setValue('sector', '');
+    setValue('cell', '');
+    setValue('village', '');
+  }, [watchedDistrict, setValue]);
+
+  useEffect(() => {
+    setValue('cell', '');
+    setValue('village', '');
+  }, [watchedSector, setValue]);
+  
+  useEffect(() => {
+    setValue('village', '');
+  }, [watchedCell, setValue]);
 
   const handleNext = async () => {
     const fieldsToValidate = StepFields[currentStep];

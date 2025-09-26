@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { addressData } from '@/lib/address-data';
-import { useEffect } from 'react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -21,7 +20,7 @@ type StepProps = {
 
 export default function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
   const form = useFormContext();
-  const { control, watch, setValue } = form;
+  const { control, watch } = form;
 
   const idNumber = watch('idNumber');
   const isPassport = idNumber && idNumber.length > 5 && idNumber.length !== 16;
@@ -39,36 +38,6 @@ export default function PersonalDetailsStep({ onNext, onPrev }: StepProps) {
   const cells = watchedSector ? Object.keys(addressData[watchedCountry as keyof typeof addressData]?.[watchedProvince as keyof typeof addressData[keyof typeof addressData]]?.[watchedDistrict]?.[watchedSector] || {}) : [];
   const villages = watchedCell ? addressData[watchedCountry as keyof typeof addressData]?.[watchedProvince as keyof typeof addressData[keyof typeof addressData]]?.[watchedDistrict]?.[watchedSector]?.[watchedCell] || [] : [];
   
-  // Reset dependent fields when a parent changes
-  useEffect(() => {
-    setValue('province', '');
-    setValue('district', '');
-    setValue('sector', '');
-    setValue('cell', '');
-    setValue('village', '');
-  }, [watchedCountry, setValue]);
-
-  useEffect(() => {
-    setValue('district', '');
-    setValue('sector', '');
-    setValue('cell', '');
-    setValue('village', '');
-  }, [watchedProvince, setValue]);
-
-  useEffect(() => {
-    setValue('sector', '');
-    setValue('cell', '');
-    setValue('village', '');
-  }, [watchedDistrict, setValue]);
-
-  useEffect(() => {
-    setValue('cell', '');
-    setValue('village', '');
-  }, [watchedSector, setValue]);
-  
-  useEffect(() => {
-    setValue('village', '');
-  }, [watchedCell, setValue]);
 
   return (
     <Card className="w-full step-card">
