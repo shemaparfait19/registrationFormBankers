@@ -1,32 +1,10 @@
+import locations from '../../location.json';
+
+// The form is structured to have a top-level country key.
+// The location.json file contains only Rwandan addresses, so we wrap it.
 export const addressData: Record<string, any> = {
-  Rwanda: {
-    'Kigali City': {
-      Gasabo: {
-        Remera: {
-          'Amahoro': ['Gacuriro', 'Rukiri I'],
-          'Rukiri II': ['Nyabisindu', 'Kabeza'],
-        },
-        Kacyiru: {
-            'Kacyiru': ['Kamuhate', 'Kamutwa'],
-            'Kibaza': ['Kibaza', 'Inkingi']
-        }
-      },
-      Nyarugenge: {
-        Nyamirambo: {
-          'Nyamirambo': ['Gatare', 'Rwarutabura'],
-          'Kivugiza': ['Kivugiza', 'Gasharu']
-        },
-      },
-    },
-    'Eastern Province': {
-      Nyagatare: {
-        'Nyagatare': {
-          'Barija': ['Kamagiri', 'Kavutsi'],
-          'Rutaraka': ['Rutaraka', 'Gacundezi']
-        },
-      },
-    },
-  },
+  Rwanda: locations,
+  // You can add other countries here if needed, following the same structure.
   Kenya: {
     'Nairobi': {
         'Dagoretti': {
